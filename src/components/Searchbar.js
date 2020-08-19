@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import EditUser from "./Table/EditUser";
 
 class Searchbar extends Component {
   constructor(props) {
@@ -34,30 +35,44 @@ class Searchbar extends Component {
     console.log(e.target.value);
     this.setState({
       tempValue: e.target.value,
-    })
-    this.props.check(this.state.tempValue)
+    });
+    this.props.check(this.state.tempValue);
+  };
+
+  isShowEditUser = () => {
+    if (this.props.editUserStatus === true) {
+      return (
+        <EditUser
+          userObj={this.props.userObj}
+          editFormStatus={() => this.props.changeStatusEdit()}
+        />
+      );
+    }
   };
 
   render() {
     return (
-      <div>
-        <div className="form-group">
-          <div className="btn-group">
-            <input
-              type="text"
-              placeholder="Type keyword"
-              className="form-control md-lg"
-              onChange={(e) => this.handleChange(e)}
-            />
-            <button
-              type="submit"
-              className="btn btn-info"
-              onClick={(dl) => this.props.check(this.state.tempValue)}
-            >
-              Search
-            </button>
+      <div className="col-12">
+        {this.isShowEditUser()}
+        <form>
+          <div className="form-group">
+            <div className="btn-group">
+              <input
+                type="text"
+                placeholder="Type keyword"
+                className="form-control md-lg"
+                onChange={(e) => this.handleChange(e)}
+              />
+              <button
+                type="submit"
+                className="btn btn-info"
+                onClick={(dl) => this.props.check(this.state.tempValue)}
+              >
+                Search
+              </button>
+            </div>
           </div>
-        </div>
+        </form>
         {this.changeButton()}
       </div>
     );

@@ -1,11 +1,16 @@
 import React, { Component } from "react";
 
 class User extends Component {
-  
+
   showLevel = () => {
     if (this.props.level === 1) return "Admin";
     else if (this.props.level === 2) return "Moderator";
     else return "Member";
+  };
+
+  editClick = () => {
+    this.props.editToUser();
+    this.props.editForm();
   };
 
   render() {
@@ -17,8 +22,17 @@ class User extends Component {
         <td>{this.showLevel()}</td>
         <td>
           <div className="btn-group">
-            <button className="btn btn-warning fixed">FIXED</button>
-            <button className="btn btn-danger remove">REMOVE</button>
+            <button
+              className="btn btn-warning fixed"
+              onClick={() => this.editClick()}
+            >
+              EDIT
+            </button>
+            <button
+              className="btn btn-danger remove"
+            >
+              DELETE
+            </button>
           </div>
         </td>
       </tr>

@@ -10,13 +10,15 @@ class Table extends Component {
       name={value.name}
       phone={value.phone}
       level={value.level}
+      editToUser={(user) => this.props.editToTable(value)}
+      editForm={() => this.props.changeStatusEdit()}
     />
   ))
 
   render() {
     return (
       <div className="col">
-        <table className="table table-striped table-hover mb-5">
+        <table className="table table-striped table-hover my-5">
           <thead className="thead-inverse">
             <tr>
               <th>STT</th>
