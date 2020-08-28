@@ -39,10 +39,19 @@ class Searchbar extends Component {
     this.props.check(this.state.tempValue);
   };
 
+  //Lấy thông tin cần sửa, cần 1 tham số truyền vào
+  getUserEditInfo = (info) => {
+    this.setState({
+      userObj: info
+    });
+    this.props.getUserEditInfoApp(info)
+  }
+
   isShowEditUser = () => {
     if (this.props.editUserStatus === true) {
       return (
         <EditUser
+          getUserEditInfo = {(info) => this.getUserEditInfo(info)}
           userObj={this.props.userObj}
           editFormStatus={() => this.props.changeStatusEdit()}
         />

@@ -18,6 +18,17 @@ class EditUser extends Component {
       [name]: value,
     });
   };
+
+  saveButton = (e) => {
+    let info = {};
+    info.id = this.state.id;
+    info.name = this.state.name;
+    info.phone = this.state.phone;
+    info.level = this.state.level;
+    this.props.getUserEditInfo(info);
+    this.props.editFormStatus(); //Khi click vào nút save trên form edit sẽ ẩn form
+  };
+
   render() {
     return (
       <div className="col-12">
@@ -61,10 +72,10 @@ class EditUser extends Component {
               </div>
               <div className="form-group">
                 <input
-                  type="reset"
+                  type="button"
                   value="Save"
                   className="btn btn-block btn-danger"
-                  onClick={() => this.props.editFormStatus()}
+                  onClick={() => this.saveButton()}
                 />
               </div>
             </div>

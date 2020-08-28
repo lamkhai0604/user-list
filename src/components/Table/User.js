@@ -13,6 +13,10 @@ class User extends Component {
     this.props.editForm();
   };
 
+  deleteUserButton = (idUser) => {
+    this.props.deleteUserButton(idUser);
+  }
+
   render() {
     return (
       <tr>
@@ -30,6 +34,7 @@ class User extends Component {
             </button>
             <button
               className="btn btn-danger remove"
+              onClick = {(idUser) => this.deleteUserButton(this.props.userId)}
             >
               DELETE
             </button>

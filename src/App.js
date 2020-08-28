@@ -53,22 +53,50 @@ class App extends Component {
   // 4. Ấn submit và lưu thông tin vê appjs.
   //Cách làm:
   // 1. connect app với table trước thông qua props.
+
+  // Cách lấy dữ liệu khi edit user
+  //1.Trong appjs định nghĩa 1 hàm lcho phép lưu trữ user trong state, sau dó đẩy dữ liệu vào đối tượng cần sửa
+  //2. Truyền từ cha sang con từ con sang cháu,
+
+  // Cách submit để thay đổi dữ liệu trong edit
+  //1.Ấn nút lấy được thông tin đã thay đổi (sử dung state lưu trữ thông tin trong quá trình sửa (state ban đầu sẽ là thông tin cần sửa)) gồm 3 bước:
+  // B1. Gửi thông tin lên compponents SearchBar trước.(Muốn gửi thông tin lên search trước tiên search phải gửi cho component con 1 hàm thông qua props)
+  // B2. Gửi thông tin từ SearchBar xuống EditUser sau dó gử tất cả thông tin lên App và log ra.
+  // B3. Sau đó dùng hàm forEach để so sánh từng phần tử nhận được.
+
+  //Cách xóa dữ liệu user.
+  //Phân tích: {
+  //  ấn nút xóa lấy được id
+  //  truyền id lên app
+  //  app sẽ tìm và xóa
+  //}
   constructor(props) {
     super(props);
     this.state = {
       status: false,
-      data: DataUser,
+      data: [],
       textData: "",
       editUserStatus: false,
-      userObj: {}
+      userObj: {},
     };
+  }
+
+  UNSAFE_componentWillMount() {
+    //Kiểm tra đã có localStorage chưa
+    if (localStorage.getItem("userData") === null) {
+      localStorage.setItem("userData", JSON.stringify(DataUser));
+    } else {
+      let temp = JSON.parse(localStorage.getItem("userData"));
+      this.setState({
+        data: temp
+      });
+    }
   }
 
   editUser = (user) => {
     this.setState({
-      userObj: user
+      userObj: user,
     });
-    console.log(user);
   };
 
   changeEditUserStatus = () => {
@@ -79,6 +107,30 @@ class App extends Component {
 
   changeStatus = () => {
     this.setState({ status: !this.state.status });
+  };
+
+  getUserEditInfoApp = (info) => {
+    this.state.data.forEach((value, key) => {
+      if (value.id === info.id) {
+        value.name = info.name;
+        value.phone = info.phone;
+        value.level = info.level;
+      }
+    });
+    localStorage.getItem("userData", JSON.stringify(this.state.data));
+  };
+
+  deleteUser = (idUser) => {
+    // hàm filter
+    // let arr = [1, 2, 3, 4, 5]
+    // let x = 4;
+    // arr = arr.filter((item) => item !== x)
+    // console.log(arr);
+    let tempData = this.state.data.filter((item) => item.id !== idUser);
+    this.setState({
+      data: tempData,
+    });
+    localStorage.getItem("userData", JSON.stringify(tempData));
   };
 
   //Truyền cho hàm 3 giá trị từ file json
@@ -97,6 +149,7 @@ class App extends Component {
     this.setState({
       data: items,
     });
+    localStorage.getItem("userData", JSON.stringify(items));
   };
 
   getDataText = (dl) => {
@@ -113,12 +166,6 @@ class App extends Component {
   // 7. Sau đó để khi F5 thì luôn hiển thị table thì phải khởi tạo textData là rỗng (vì khi tìm rỗng thì luôn sẽ trả về 5 giá trị)
   // 8. Để trong lúc search hiển thị ra kết quả luôn thì trong input của child, gọi luôn hàm của cha thông qua check, và truyền vào dữ liệu trung gian tempValue
 
-  // Cách lấy dữ liệu khi edit user
-  //1.Trong appjs định nghĩa 1 hàm lcho phép lưu trữ user trong state, sau dó đẩy dữ liệu vào đối tượng cần sửa
-  //2. Truyền từ cha sang con từ con sang cháu,
-
-  // Cách submit để thay đổi dữ liệu trong edit
-  //1.Ấn nút lấy được thông tin đã thay đổi (sử dung state lưu trữ thông tin trong quá trình sửa (state ban đầu sẽ là thông tin cần sửa))
   render() {
     // Trước khi render tiến hành tìm kiếm theo từ khóa.
     let result = [];
@@ -127,6 +174,8 @@ class App extends Component {
         result.push(item);
       }
     });
+
+    localStorage.setItem("userData", JSON.stringify(DataUser));
     return (
       <div>
         <Header />
@@ -135,9 +184,9 @@ class App extends Component {
           <div className="container-fluid">
             <div className="row">
               <div className="col-12">
-
                 <Searchbar
-                  userObj= {this.state.userObj}
+                  getUserEditInfoApp={(info) => this.getUserEditInfoApp(info)}
+                  userObj={this.state.userObj}
                   check={(dl) => this.getDataText(dl)}
                   changeButton={() => this.changeStatus()}
                   status={this.state.status}
@@ -146,12 +195,13 @@ class App extends Component {
                 />
               </div>
 
-                <hr />
+              <hr />
 
               <Table
                 data={result}
                 editToTable={(user) => this.editUser(user)}
                 changeStatusEdit={() => this.changeEditUserStatus()}
+                deleteUser={(idUser) => this.deleteUser(idUser)}
               />
 
               <AddUser

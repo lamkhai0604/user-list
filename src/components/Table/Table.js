@@ -3,15 +3,21 @@ import User from "./User"
 
 class Table extends Component {
 
+  deleteUserButton = (idUser) => {
+    this.props.deleteUser(idUser);
+  }
+
   mapingDataUser = () => this.props.data.map((value, key) => (
     <User
       key={key}
       userId={key}
+      id={value.id}
       name={value.name}
       phone={value.phone}
       level={value.level}
-      editToUser={(user) => this.props.editToTable(value)}
       editForm={() => this.props.changeStatusEdit()}
+      editToUser={(user) => this.props.editToTable(value)}
+      deleteUserButton={(idUser) => this.deleteUserButton(idUser)}
     />
   ))
 
